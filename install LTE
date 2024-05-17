@@ -1,0 +1,39 @@
+export SRSRAN_INSTALL=${HOME}/srsRAN
+
+
+// install SoapySDR
+
+
+cd SoapySDR
+mkdir build && cd build
+cmake -DCMAKE_PREFIX_PATH=${SRSRAN_INSTALL} -DCMAKE_INSTALL_PREFIX=${SRSRAN_INSTALL} ..
+make -j`nproc` && make install
+
+
+cd LimeSuite
+mkdir builddir && cd builddir
+cmake -DCMAKE_PREFIX_PATH=${SRSRAN_INSTALL} -DCMAKE_INSTALL_PREFIX=${SRSRAN_INSTALL} ..
+make -j`nproc` && make install
+cd ../udev-rules
+sudo bash install.sh
+
+
+cd srsGUI
+mkdir build && cd build
+cmake -DCMAKE_PREFIX_PATH=${SRSRAN_INSTALL} -DCMAKE_INSTALL_PREFIX=${SRSRAN_INSTALL} ..
+make -j`nproc` && make install
+
+
+cd srsRAN_4G
+mkdir build && cd build
+cmake -DCMAKE_PREFIX_PATH=${SRSRAN_INSTALL} -DCMAKE_INSTALL_PREFIX=${SRSRAN_INSTALL} -DUSE_LTE_RATES=ON ..
+make -j`nproc`
+make test
+make install
+./srsran_install_configs.sh user
+
+
+
+// check 
+export LD_LIBRARY_PATH=${SRSRAN_INSTALL}/lib
+export PATH=${SRSRAN_INSTALL}/bin:$PATH
